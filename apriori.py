@@ -146,6 +146,7 @@ def ExportResults(items, rules):
     df = pd.DataFrame(items)
     df.columns = ['FrequentWords','Size','Frequency']
     #df.sort(columns='Size',ascending=True)
+    df.sort_values(by=['Size','Frequency'],ascending=True)
     df.to_csv("data.csv",index=False,encoding="utf_8_sig")
 
 def dataFromFile(fname):
