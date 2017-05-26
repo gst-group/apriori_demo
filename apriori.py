@@ -12,6 +12,8 @@ import sys
 from itertools import chain, combinations
 from collections import defaultdict
 from optparse import OptionParser
+import pandas as pd
+import numpy as np
 
 
 def subsets(arr):
@@ -56,7 +58,7 @@ def getItemSetTransactionList(data_iterator):
     return itemSet, transactionList
 
 
-def runApriori(data_iter, minSupport, minConfidence):
+def runApriori(data_iter, minSupport, minConfidence,total = 1):
     """
     run the apriori algorithm. data_iter is a record iterator
     Return both:
@@ -96,7 +98,7 @@ def runApriori(data_iter, minSupport, minConfidence):
 
     toRetItems = []
     for key, value in largeSet.items():
-        toRetItems.extend([(tuple(item), getSupport(item))
+        toRetItems.extend([(tuple(item),len(tuple(item)), int(getSupport(item)*total))
                            for item in value])
 
     toRetRules = []
@@ -122,16 +124,29 @@ def decode_tuple_zh(item):
     result.rstrip(',')
     return result
 
-def printResults(items, rules):
-    """prints the generated itemsets sorted by support and the confidence rules sorted by confidence"""
-    for item, support in sorted(items, key=lambda (item, support): support):
-        print type(item)
-        print "item: %s , %.3f" % (decode_tuple_zh(item), support)
-    print "\n------------------------ RULES:"
-    for rule, confidence in sorted(rules, key=lambda (rule, confidence): confidence):
-        pre, post = rule
-        print "Rule: %s ==> %s , %.3f" % (decode_tuple_zh(pre), decode_tuple_zh(post), confidence)
 
+
+def ExportResults(items, rules):
+    """prints the generated itemsets sorted by support and the confidence rules sorted by confidence"""
+
+    # for item, support in sorted(items, key=lambda (item, support): support):
+    #
+    #     #print type(item)
+    #     pass
+    #     # print "%s" % (decode_tuple_zh(item))
+    #     #print support
+    #     # df = pd.DataFrame(decode_tuple_zh(item))
+    #     # df.to_csv('text.csv',index=False)
+    # # print "\n------------------------ RULES:"
+    # # for rule, confidence in sorted(rules, key=lambda (rule, confidence): confidence):
+    # #     pre, post = rule
+    # #     print "Rule: %s ==> %s , %.3f" % (decode_tuple_zh(pre), decode_tuple_zh(post), confidence)
+    # #print type(items)
+    items = np.asarray(items)
+    df = pd.DataFrame(items)
+    df.columns = ['FrequentWords','Size','Frequency']
+    #df.sort(columns='Size',ascending=True)
+    df.to_csv("data.csv",index=False,encoding="utf_8_sig")
 
 def dataFromFile(fname):
         """Function which reads from the file and yields a generator"""
@@ -174,6 +189,5 @@ if __name__ == "__main__":
     minSupport = options.minS
     minConfidence = options.minC
 
-    items, rules = runApriori(inFile, minSupport, minConfidence)
-
-    printResults(items, rules)
+    items, rules = runApriori(inFile, minSupport, minConfidence,300)
+    ExportResults(items, rules)

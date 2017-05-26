@@ -9,7 +9,7 @@ from apriori import (
     getItemSetTransactionList,
     dataFromFile,
     joinSet,
-    printResults,
+    ExportResults,
     returnItemsWithMinSupport,
     runApriori,
     subsets,
@@ -174,7 +174,7 @@ class AprioriTest(unittest.TestCase):
                 ((('beer',), ('rice',)), 0.6666666666666666),
                 ((('rice',), ('beer',)), 1.0)
             ]
-            printResults(items, rules)
+            ExportResults(items, rules)
 
             expected = "item: ('milk',) , 0.500\nitem: ('apple',) , "
             expected += "0.500\nitem: ('rice',) , 0.500\nitem: ('beer', "
