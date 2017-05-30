@@ -152,7 +152,8 @@ def dataFromFile(fname):
         """Function which reads from the file and yields a generator"""
         file_iter = open(fname, 'rU')
         for line in file_iter:
-                print line
+                # print(line) #python 3
+                print line #python 2
                 line = line.strip().rstrip(',')                         # Remove trailing comma
                 record = frozenset(line.split(','))
                 yield record
@@ -184,7 +185,8 @@ if __name__ == "__main__":
     elif options.input is not None:
             inFile = dataFromFile(options.input)
     else:
-            print 'No dataset filename specified, system with exit\n'
+            # print('No dataset filename specified, system with exit\n') #python 3
+            print 'No dataset filename specified, system with exit\n' #python 2
             sys.exit('System will exit')
 
     minSupport = options.minS
